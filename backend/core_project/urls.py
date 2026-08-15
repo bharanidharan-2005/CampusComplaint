@@ -1,24 +1,26 @@
 from django.contrib import admin
 from django.urls import path, include
+from django.conf import settings
+from django.conf.urls.static import static
 from django.http import JsonResponse
 from users.views import CustomLoginView
 
 def health_check(request):
-    return JsonResponse({"status": "Backend service is live!"})
+    return JsonResponse({"status": "Backend service is live and running!"})
 
 urlpatterns = [
-    path('', health_check),
+    path('', health_check, name='health-check'),
     path('admin/', admin.site.urls),
 
-    # Routes for /login/ and /auth/register/
+    # Direct routes matching your frontend calls
     path('login/', CustomLoginView.as_view(), name='direct-login'),
-    path('auth/', include('users.urls')), 
+    path('auth/', include('users.urls')),  # Routes /auth/register/ -> users.urls
 
-    # Routes for /api/login/ and /api/register/
-    path('api/login/', CustomLoginView.as_view(), name='api-login'),
+    # Standard /api/ prefix routes
+    path('api/', include('lostfound.urls')), 
     path('api/', include('users.urls')),
     path('api/', include('complaints.urls')),
-    path('api/', include('lostfound.urls')),
+    path('api/login/', CustomLoginView.as_view(), name='api-login'),
 ]
 
 if settings.DEBUG:
