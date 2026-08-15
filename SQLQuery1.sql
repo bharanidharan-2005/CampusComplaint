@@ -1,0 +1,7 @@
+USE SmartCampusDB;
+GO
+
+ALTER TABLE Users ADD last_login DATETIME NULL;
+ALTER TABLE Users ADD is_superuser BIT NOT NULL DEFAULT 0;
+ALTER TABLE Users ADD is_staff BIT NOT NULL DEFAULT 0;
+GO

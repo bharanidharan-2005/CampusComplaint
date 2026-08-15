@@ -1,5 +1,5 @@
 from django.contrib import admin
-from .models import Complaint, LostFoundItem  # <-- Added LostFoundItem to the import
+from .models import Complaint  # <-- Added LostFoundItem to the import
 
 # 1. Complaint Admin Configuration
 @admin.register(Complaint)
@@ -18,16 +18,15 @@ class ComplaintAdmin(admin.ModelAdmin):
 
 
 # 2. Lost & Found Admin Configuration
-@admin.register(LostFoundItem)
-class LostFoundItemAdmin(admin.ModelAdmin):
-    # Dictates columns for the Lost & Found list view
-    list_display = ('id', 'item_name', 'type', 'category', 'date', 'status')
-    
-    # Filter sidebar for quick sorting
-    list_filter = ('type', 'category', 'status')
-    
-    # Search bar to easily find lost or found items
-    search_fields = ('item_name', 'description', 'location')
-    
-    # Clickable links to view details
-    list_display_links = ('id', 'item_name')
+
+
+
+
+
+
+
+
+
+
+
+

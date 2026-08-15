@@ -1,15 +1,14 @@
-from django.urls import path, include
-from rest_framework.routers import DefaultRouter
-from .views import ComplaintViewSet, AllComplaintsListView, LostFoundCreateView,LostFoundListView
-from users.views import CustomLoginView
-router = DefaultRouter()
-router.register(r'complaints', ComplaintViewSet, basename='complaint')
+from django.urls import path
+from .views import (
+    ComplaintDetailView,
+    ComplaintAssignView, ComplaintRemarksView, NotificationListView,
+)
 
+# NOTE: complaint create/list-all/detail are served by users.urls. Only the
+# endpoints unique to this app (assign, remarks, notifications) are wired here
+# to avoid duplicate path/name collisions with users.urls.
 urlpatterns = [
-    path('api/auth/login/', CustomLoginView.as_view(), name='login'),
-    path('complaints/all/', AllComplaintsListView.as_view(), name='all-complaints'),
-    path('lost-found/', LostFoundCreateView.as_view(), name='lost-found-create'),
-    path('lost-found/list/', LostFoundListView.as_view(), name='lost-found-list'),
-    path('', include(router.urls)),
-    
+    path('complaints/<int:pk>/assign/', ComplaintAssignView.as_view(), name='complaint-assign'),
+    path('complaints/<int:pk>/remarks/', ComplaintRemarksView.as_view(), name='complaint-remarks'),
+    path('notifications/', NotificationListView.as_view(), name='notifications'),
 ]
