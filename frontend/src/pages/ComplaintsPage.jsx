@@ -1,5 +1,6 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
+
 import { Eye, MessageSquarePlus, UserPlus, Search, Filter } from 'lucide-react';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
@@ -16,10 +17,9 @@ const STATUS_OPTIONS = ['Pending', 'In Progress', 'Resolved', 'Closed', 'Escalat
 const ComplaintsPage = () => {
     const { user } = useAuth();
     const [searchParams] = useSearchParams();
-    const view = searchParams.get('view') || (isExecutive ? 'all' : 'mine');
-
     const role = (user?.role || '').toLowerCase();
     const isExecutive = ['dean', 'principal', 'admin'].includes(role);
+    const view = searchParams.get('view') || (isExecutive ? 'all' : 'mine');
     const [me, setMe] = useState({ id: null, department: null });
     const [complaints, setComplaints] = useState([]);
     const [users, setUsers] = useState([]);
@@ -101,7 +101,7 @@ const ComplaintsPage = () => {
                 (c.department || '').toLowerCase().includes(q));
         }
         return list;
-    }, [complaints, view, me.id, me.department, statusFilter, deptFilter, search]);
+    }, [complaints, view, role, me.id, me.department, statusFilter, deptFilter, search]);
 
     const departments = useMemo(
         () => ['All', ...Array.from(new Set(complaints.map((c) => c.department).filter(Boolean)))],

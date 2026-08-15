@@ -2,7 +2,6 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { useSearchParams } from 'react-router-dom';
 import { Plus, Search, Check, X, PackageX, PackageCheck, ClipboardList } from 'lucide-react';
 import api from '../services/api';
-import { useAuth } from '../context/AuthContext';
 import MainLayout from '../layouts/MainLayout';
 import StatusBadge from '../components/ui/StatusBadge';
 import Badge from '../components/ui/Badge';
@@ -10,7 +9,6 @@ import Spinner from '../components/ui/Spinner';
 import EmptyState from '../components/ui/EmptyState';
 
 const LostFoundPage = () => {
-    const { user } = useAuth();
     const [searchParams] = useSearchParams();
     const view = searchParams.get('view') || 'student';
 

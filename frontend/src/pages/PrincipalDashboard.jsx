@@ -1,5 +1,4 @@
 import React, { useState, useEffect, useMemo } from 'react';
-import { useSearchParams } from 'react-router-dom';
 import api from '../services/api';
 import { useAuth } from '../context/AuthContext';
 import MainLayout from '../layouts/MainLayout';
@@ -23,7 +22,6 @@ const PrincipalDashboard = () => {
     const [refreshing, setRefreshing] = useState(false);
     const [error, setError] = useState(null);
     const [selectedComplaint, setSelectedComplaint] = useState(null);
-    const [searchParams] = useSearchParams();
 
     const CHART = ['#a21caf', '#7c3aed', '#4f46e5', '#f59e0b', '#10b981', '#ef4444'];
     const priorityWeight = { Critical: 4, High: 3, Medium: 2, Low: 1 };
@@ -68,11 +66,11 @@ const PrincipalDashboard = () => {
     const watchlist = useMemo(() => complaints
         .filter((c) => c.status === 'Escalated' || (c.priority && ['High', 'Critical'].includes(c.priority)))
         .sort((a, b) => (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0))
-        .slice(0, 5), [complaints]);
+        .slice(0, 5), [complaints, priorityWeight]);
 
     const highPriority = useMemo(() => [...complaints]
         .sort((a, b) => (priorityWeight[b.priority] || 0) - (priorityWeight[a.priority] || 0))
-        .slice(0, 8), [complaints]);
+        .slice(0, 8), [complaints, priorityWeight]);
 
     const statusData = useMemo(() => (analytics
         ? analytics.statusBreakdown.map((s) => ({ name: formatStatus(s.status), key: s.status, value: s.count }))

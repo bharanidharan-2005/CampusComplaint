@@ -6,7 +6,6 @@ import {
 import api from '../services/api';
 import MainLayout from '../layouts/MainLayout';
 import StatCard from '../components/ui/StatCard';
-import StatusBadge from '../components/ui/StatusBadge';
 import Spinner from '../components/ui/Spinner';
 import EmptyState from '../components/ui/EmptyState';
 import ComplaintDetailModal from '../components/ComplaintDetailModal';
