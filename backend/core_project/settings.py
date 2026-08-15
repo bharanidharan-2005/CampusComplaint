@@ -37,7 +37,12 @@ if DEBUG and SECRET_KEY == 'django-insecure-dev-only-change-me':
         'file or environment before deploying.',
         RuntimeWarning,
     )
+    
 
+
+# Automatically create the logs folder if missing on startup
+LOGS_DIR = os.path.join(BASE_DIR, 'logs')
+os.makedirs(LOGS_DIR, exist_ok=True)
 ALLOWED_HOSTS = config(
     'ALLOWED_HOSTS',
     default='localhost,127.0.0.1',
