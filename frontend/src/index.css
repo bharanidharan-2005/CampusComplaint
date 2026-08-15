@@ -1,0 +1,42 @@
+@tailwind base;
+@tailwind components;
+@tailwind utilities;
+
+/* You can leave any custom CSS you had below this, but these three lines MUST be at the top */
+
+/* ===== Global Light/Dark theme =====
+   The app toggles a `dark` class on <html>. These overrides recolor the
+   shared slate/white palette used across every page so dark mode works
+   everywhere without editing each component individually. */
+.dark body {
+    background-color: #0f172a;
+    color: #e2e8f0;
+}
+
+.dark .bg-white { background-color: #1e293b; }
+.dark .bg-slate-50 { background-color: #0f172a; }
+.dark .bg-slate-100 { background-color: #334155; }
+.dark .bg-slate-200 { background-color: #475569; }
+
+.dark .text-slate-900 { color: #f8fafc; }
+.dark .text-slate-800 { color: #f1f5f9; }
+.dark .text-slate-700 { color: #e2e8f0; }
+.dark .text-slate-600 { color: #cbd5e1; }
+.dark .text-slate-500 { color: #94a3b8; }
+.dark .text-slate-400 { color: #94a3b8; }
+
+.dark .border-slate-200 { border-color: #334155; }
+.dark .border-slate-100 { border-color: #1e293b; }
+
+.dark input,
+.dark textarea,
+.dark select {
+    color: #e2e8f0;
+}
+.dark input::placeholder,
+.dark textarea::placeholder {
+    color: #64748b;
+}
+
+/* Keep the indigo sidebar's active nav pill white on a colored panel */
+.dark aside .bg-white { background-color: #ffffff; }
