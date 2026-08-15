@@ -4,20 +4,15 @@ Django settings for core_project.
 Professional, environment-driven configuration.
 All secrets and environment-specific values are read from environment
 variables (or a local `.env` file) using python-decouple.
-
-For local development, copy `.env.example` to `.env` and adjust the values.
-NEVER commit the real `.env` file - it is git-ignored.
 """
 
 import os
 from pathlib import Path
 from datetime import timedelta
-
 from decouple import config, Csv
 
 # Build paths inside the project like this: BASE_DIR / 'subdir'.
 BASE_DIR = Path(__file__).resolve().parent.parent
-
 
 # ---------------------------------------------------------------------------
 # Core environment flags
@@ -29,26 +24,36 @@ SECRET_KEY = config(
     default='django-insecure-dev-only-change-me',
 )
 
-# SECURITY WARNING: keep the secret key used in production secret!
 if DEBUG and SECRET_KEY == 'django-insecure-dev-only-change-me':
     import warnings
     warnings.warn(
-        'Using an insecure default SECRET_KEY. Set SECRET_KEY in your .env '
-        'file or environment before deploying.',
+        'Using an insecure default SECRET_KEY. Set SECRET_KEY in your environment before deploying.',
         RuntimeWarning,
     )
-    
-
 
 # Automatically create the logs folder if missing on startup
 LOGS_DIR = os.path.join(BASE_DIR, 'logs')
 os.makedirs(LOGS_DIR, exist_ok=True)
-ALLOWED_HOSTS = config(
-    'ALLOWED_HOSTS',
-    default='localhost,127.0.0.1',
-    cast=Csv(),
-)
 
+# ---------------------------------------------------------------------------
+# Allowed Hosts & Security Origins
+# ---------------------------------------------------------------------------
+ALLOWED_HOSTS = [
+    'mzvoiceit.onrender.com',
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
+
+CSRF_TRUSTED_ORIGINS = [
+    'https://mzvoiceit.onrender.com',
+    'https://mzvoiceit-one.vercel.app',
+    'https://*.vercel.app',
+]
 
 # ---------------------------------------------------------------------------
 # Application definition
@@ -100,13 +105,10 @@ TEMPLATES = [
 
 WSGI_APPLICATION = 'core_project.wsgi.application'
 
-# Replace 'users' with your actual app name if it is different
 AUTH_USER_MODEL = 'users.User'
-
 
 # ---------------------------------------------------------------------------
 # Database
-# Defaults point at a local SQL Server instance. Override via .env.
 # ---------------------------------------------------------------------------
 DATABASES = {
     'default': {
@@ -124,30 +126,29 @@ DATABASES = {
     }
 }
 
-ALLOWED_HOSTS = [
-    'mzvoiceit.onrender.com',
-    '.onrender.com',
-    'localhost',
-    '127.0.0.1',
-]
-
-ALLOWED_HOSTS = ['localhost', '127.0.0.1']
-RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
-if RENDER_EXTERNAL_HOSTNAME:
-    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
-
 # ---------------------------------------------------------------------------
-# Media files (complaint images, etc.)
+# Media & Static Files
 # ---------------------------------------------------------------------------
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-CSRF_TRUSTED_ORIGINS = [
-    'https://mzvoiceit.onrender.com',
-    'https://*.vercel.app',  # Allows requests from your Vercel deployments
-]
+STATIC_URL = 'static/'
+STATIC_ROOT = BASE_DIR / 'staticfiles'
+
 # ---------------------------------------------------------------------------
-# Django REST Framework & JWT
+# CORS Configuration (Explicitly allows your Vercel frontend)
+# ---------------------------------------------------------------------------
+CORS_ALLOWED_ORIGINS = [
+    "https://mzvoiceit-one.vercel.app",
+    "https://mzvoiceit.vercel.app",
+    "http://localhost:3000",
+    "http://127.0.0.1:3000",
+]
+
+CORS_ALLOW_CREDENTIALS = True
+
+# ---------------------------------------------------------------------------
+# REST Framework & JWT
 # ---------------------------------------------------------------------------
 REST_FRAMEWORK = {
     'DEFAULT_AUTHENTICATION_CLASSES': (
@@ -167,9 +168,8 @@ SIMPLE_JWT = {
     'AUTH_HEADER_TYPES': ('Bearer',),
 }
 
-
 # ---------------------------------------------------------------------------
-# Email (console backend in dev; configure SMTP for production)
+# Email Configuration
 # ---------------------------------------------------------------------------
 EMAIL_BACKEND = config(
     'EMAIL_BACKEND',
@@ -184,7 +184,6 @@ AUTH_PASSWORD_VALIDATORS = [
     {'NAME': 'django.contrib.auth.password_validation.NumericPasswordValidator'},
 ]
 
-
 # ---------------------------------------------------------------------------
 # Internationalization
 # ---------------------------------------------------------------------------
@@ -193,27 +192,8 @@ TIME_ZONE = 'UTC'
 USE_I18N = True
 USE_TZ = True
 
-
 # ---------------------------------------------------------------------------
-# Static & media files
-# ---------------------------------------------------------------------------
-STATIC_URL = 'static/'
-STATIC_ROOT = BASE_DIR / 'staticfiles'
-
-
-# ---------------------------------------------------------------------------
-# CORS - restrict to known front-end origins in production
-# ---------------------------------------------------------------------------
-CORS_ALLOWED_ORIGINS = config(
-    'CORS_ALLOWED_ORIGINS',
-    default='http://localhost:3000,http://127.0.0.1:3000',
-    cast=Csv(),
-)
-CORS_ALLOW_CREDENTIALS = True
-
-
-# ---------------------------------------------------------------------------
-# Production security hardening (only applied when DEBUG is False)
+# Production Security Hardening
 # ---------------------------------------------------------------------------
 if not DEBUG:
     SECURE_SSL_REDIRECT = config('SECURE_SSL_REDIRECT', default=True, cast=bool)
@@ -225,7 +205,6 @@ if not DEBUG:
     SECURE_CONTENT_TYPE_NOSNIFF = True
     SECURE_BROWSER_XSS_FILTER = True
     X_FRAME_OPTIONS = 'DENY'
-
 
 # ---------------------------------------------------------------------------
 # Logging
