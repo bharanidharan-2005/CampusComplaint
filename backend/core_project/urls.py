@@ -11,12 +11,17 @@ def health_check(request):
 urlpatterns = [
     path('', health_check, name='health-check'),
     path('admin/', admin.site.urls),
+
+    # Direct routes matching your frontend calls
+    path('login/', CustomLoginView.as_view(), name='direct-login'),
+    path('auth/', include('users.urls')),  # Routes /auth/register/ -> users.urls
+
+    # Standard /api/ prefix routes
     path('api/', include('lostfound.urls')), 
     path('api/', include('users.urls')),
     path('api/', include('complaints.urls')),
     path('api/login/', CustomLoginView.as_view(), name='api-login'),
 ]
 
-# Serve media files locally during development
 if settings.DEBUG:
     urlpatterns += static(settings.MEDIA_URL, document_root=settings.MEDIA_ROOT)
