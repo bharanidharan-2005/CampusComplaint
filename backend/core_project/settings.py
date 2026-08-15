@@ -124,6 +124,17 @@ DATABASES = {
     }
 }
 
+ALLOWED_HOSTS = [
+    'mzvoiceit.onrender.com',
+    '.onrender.com',
+    'localhost',
+    '127.0.0.1',
+]
+
+ALLOWED_HOSTS = ['localhost', '127.0.0.1']
+RENDER_EXTERNAL_HOSTNAME = os.environ.get('RENDER_EXTERNAL_HOSTNAME')
+if RENDER_EXTERNAL_HOSTNAME:
+    ALLOWED_HOSTS.append(RENDER_EXTERNAL_HOSTNAME)
 
 # ---------------------------------------------------------------------------
 # Media files (complaint images, etc.)
@@ -131,7 +142,10 @@ DATABASES = {
 MEDIA_URL = 'media/'
 MEDIA_ROOT = BASE_DIR / 'media'
 
-
+CSRF_TRUSTED_ORIGINS = [
+    'https://mzvoiceit.onrender.com',
+    'https://*.vercel.app',  # Allows requests from your Vercel deployments
+]
 # ---------------------------------------------------------------------------
 # Django REST Framework & JWT
 # ---------------------------------------------------------------------------
